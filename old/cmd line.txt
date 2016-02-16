@@ -1,0 +1,29 @@
+D:\Du_Web>youtube-dl -f HTTP_MP4_MQ_1 http://www.arte.tv/guide/fr/emissions/TRA/tracks
+
+Pour voir tous les format :
+youtube-dl -F url
+
+D:\Du_Web>
+D:\Du_Web>youtube-dl --get-filename -o "%(title)s-%(upload_date)s.%(ext)s" -f HTTP_MP4_MQ_1 http://www.arte.tv/guide/fr/emissions/TRA/tracks
+Tracks - Bilderbuch, Jimmy Page, Perfume Genius-20150131.mp4
+
+D:\Du_Web>youtube-dl --get-filename --restrict-filenames -o "%(title)s-%(upload_date)s.%(ext)s" -f HTTP_MP4_MQ_1 http://www.arte.tv/guide/fr/emissions/TRA/tracks
+Tracks_-_Bilderbuch_Jimmy_Page_Perfume_Genius-20150131.mp4
+
+D:\Du_Web>
+
+
+VOIR 
+-w, --no-overwrites              do not overwrite files
+
+youtube-dl  --restrict-filenames --no-overwrites -o "F:\--JDL--\Arte\%(title)s-%(upload_date)s.%(ext)s" -f HTTP_MP4_MQ_1 http://www.arte.tv/guide/fr/emissions/TRA/tracks
+
+
+youtube-dl --restrict-filenames --no-overwrites -o "F:\--JDL--\Arte\%(title)s-%(upload_date)s.%(ext)s" -f HTTP_MP4_MQ_1 http://www.arte.tv/guide/fr/emissions/PNB/personne-ne-bouge
+
+
+http://www.arte.tv/guide/fr/plus7/par_emissions?name=Court-circuit&value=COU
+BOF ne prend que la première video !!
+
+youtube-dl.exe --no-overwrites --restrict-filenames -o "%(title)s-%(upload_date)s.%(ext)s" -f HTTP
+_MP4_MQ_1 --batch file=listelienCOU.txt
