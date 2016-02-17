@@ -12,22 +12,29 @@ import dateparser
 from urlparse import urlparse, parse_qs
 import log
 import begin
+import os
+from os.path import expanduser
 
 # Ce script DL la page
 # http://cinema.arte.tv/fr/magazine/court-circuit/emissions
-# 'fr' uniquement (mais pas très difficile de faire en 'de')
-#
+# 'fr' uniquement
+# 'de' voir : http://cinema.arte.tv/de/magazin/kurzschluss
+# http://cinema.arte.tv/de/magazin/kurzschluss/sendungen-0
+# 
 # trouve la page de la dernière emission téléchargeable
 # Sur la page : liste les "métrage" et les DL
 #
 # vers le début fev maj de ytdl avec arte cinema (à suivre)
 #
-# m.a.j : 12 fev 2016
+# m.a.j : 17 fev 2016
+#
+# notes:
+# quality = 'HTTP_MP4_EQ_1/best'  # mp4 720x406 VOA-STF, VOSTF 1500k OR best
+# voir qualities_for_ytdl.txt
+# with YAML windows path escape \
 
 URL_BASE_COU = 'http://cinema.arte.tv/fr/magazine/court-circuit/emissions'
 URL_BASE_CINEMA = 'http://cinema.arte.tv'
-QUALITY = 'HTTP_MP4_EQ_1/best'  # mp4 720x406 VOA-STF, VOSTF 1500k OR best
-DIR_DL = 'F:\\--JDL--\\arte\\'
 
 
 # DES FUNCTIONS ################################################################
@@ -54,7 +61,7 @@ def dl_page_for_soup(url):
     return result
 
 
-def DeltaDate(datelue):
+def correct_date(datelue):
     ''' datelue est un string, à priori une date
     cette date est testée jusqu'à donner une datetime.datetime correcte.
     - on peut trouver 'Vendredi 15 janvier à 00h20'
@@ -70,26 +77,33 @@ def DeltaDate(datelue):
         else:
             list.pop()
 
+def directory_dl(adir):
+    ''' renvoie le répertoire de téléchargement
+    si default=HOME -> user
+    sinon celui passé en ligne de cmd
+    '''
+    if adir == '~':
+        return expanduser("~")
+    else:
+        return adir
+        
 
 # MAIN #########################################################################
 @begin.start
-def main(download=True, debug=False):
+def main(dirdl='~',quality='HTTP_MP4_EQ_1/best',download=True, debug=False):
 
     ''' arte_court_circuit est un script qui télécharge automatique les derniers
-    court-métrages mis en ligne par : 'http://cinema.arte.tv'.
+    court-métrages de l'émission 'court-circuit' sur Arte 'fr'. '''
 
-    Voir aussi:
-    les constantes globales (qualité des vidéos et dossier de téléchargement)
-    '''
-    # options
     lvl_log_console = 'INFO'
     if debug:
         lvl_log_console = 'DEBUG'
-    # logger
-    logger = log.a_logger('arte-court-circuit', lvl_log_console, DIR_DL)
-
+    dirdl = directory_dl(dirdl)
+    logger = log.a_logger('arte-court-circuit', lvl_log_console, dirdl)
+    logger.info('download directory: '+ dirdl)
+    
+    # let's go !
     success, soup = dl_page_for_soup(URL_BASE_COU)
-    logger.info(URL_BASE_COU)
     if not success:
         exit()
 
@@ -99,14 +113,13 @@ def main(download=True, debug=False):
     linkemission = ''
     for elt in divart:
         dateheure_arte = elt.find("div", class_="field-section").string.strip()
-        datetimeemission = DeltaDate(dateheure_arte)
-
+        datetimeemission = correct_date(dateheure_arte)
         logger.debug(datetimeemission)
         if datetimeemission is None:
-            logger.debug('Pas de date (dateparser=>None)')
+            logger.debug('No date (dateparser=>None)')
             exit()
         if ((datetime.datetime.now() - datetimeemission).days > 30):
-            logger.debug('trop loin')
+            logger.debug('so far in time')
             break
         if ((datetimeemission < datetime.datetime.today())
                 and ((datetime.datetime.now() - datetimeemission).days < 8)):
@@ -120,7 +133,7 @@ def main(download=True, debug=False):
     # ICI, on pourrait (ou pas) mettre une verif dans un fichier 'historique'
 
     if linkemission == '':
-        logger.info('Semble OK pour la date, mais pas de lien')
+        logger.info('Date seems OK, but non link')
         exit()
 
     # Requete de la page de l'émission
@@ -146,7 +159,7 @@ def main(download=True, debug=False):
                 if 'icon-play' in span_icon:
                     liens_cm.append(URL_BASE_CINEMA + elt1['about'])
 
-    logger.debug('---- Creation title_cm et url_final ----')
+    logger.debug('---- create title_cm url_final ----')
     # pour chaque liens_cm DL du json
     # create a empty dict for {'title_cm','url_final'}
     arte_cm = {}
@@ -199,10 +212,10 @@ def main(download=True, debug=False):
         logger.debug('launch ytdl for : ' + title)
         ydl_opts = {
             # 'simulate': 'True',
-            'format': QUALITY,
+            'format': quality,
             'noprogress': 'True',
             # 'nooverwrites': 'True',
-            'outtmpl': DIR_DL + '%(upload_date)s ' + title + '.%(ext)s',
+            'outtmpl': dirdl + os.sep + '%(upload_date)s ' + title + '.%(ext)s',
             'logger': logger,
             'progress_hooks': [my_hook],
         }

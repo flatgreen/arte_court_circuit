@@ -2,8 +2,9 @@ arte_court_circuit
 ==================
 
 arte_court_circuit est un script python qui télécharge automatique les derniers 
-court-métrages mis en ligne par [cinema.arte.tv](http://cinema.arte.tv).
-Et plus précisément de l'émission [cour-circuit](http://cinema.arte.tv/fr/magazine/court-circuit/emissions).
+court-métrages mis en ligne par l'émission [cour-circuit](http://cinema.arte.tv/fr/magazine/court-circuit/emissions).
+
+Actuellement télécharge qu'à partir de l'émission en français.
 
 Vous pouvez l'installer !
 ---------------------------
@@ -20,10 +21,9 @@ arte_court_circuit
 
 arte_court_circuit -h
 
+arte_court_circuit -d path\to\download -q quality
 
-Restriction (et/ou TODO)
---------------------
-Il y a des constantes globales (qualité des vidéos et dossier de téléchargement)
+Pour la *quality* voir *qualities_for_ytdl.txt*
 
 Licence
 ----------------
