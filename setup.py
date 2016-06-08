@@ -12,7 +12,7 @@ setup(
     author_email="flatgreen@gmail.com",
     description="Télécharge les derniers court-métrages de Arte Court-circuit",
     long_description=open('README.md').read(),
-    install_requires=["beautifulsoup4", "begins", "dateparser",
+    install_requires=["beautifulsoup4", "begins", "dateparser >= 0.3.4",
                       "requests", "youtube-dl >= 2016.2.13"],
     include_package_data=True,
     url='https://github.com/flatgreen',
