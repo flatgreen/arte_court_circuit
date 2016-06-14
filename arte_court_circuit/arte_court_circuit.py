@@ -26,7 +26,7 @@ from os.path import expanduser
 #
 # vers le début fev maj de ytdl avec arte cinema (à suivre)
 #
-# m.a.j : 17 fev 2016
+# m.a.j : 14 juin 2016
 #
 # notes:
 # quality = 'HTTP_MP4_EQ_1/best'  # mp4 720x406 VOA-STF, VOSTF 1500k OR best
@@ -65,7 +65,7 @@ def correct_date(datelue):
     list = datelue.split()
     while list != []:
         adate = ' '.join(list)
-        print adate
+        # print adate
         ladate = dateparser.parse(adate, languages=['fr'])
         if ladate is not None:
             return ladate
@@ -148,15 +148,25 @@ def main(dirdl='~', quality='HTTP_MP4_EQ_1/best', download=True, debug=False):
         for elt1 in divpages:
             logger.debug(elt1['about'])
             fieldsection = elt1.find("div", class_="field-section").string.strip()
-            logger.debug(' ' + fieldsection + ' ' + 'metrage:' +
-                         str('métrage' in fieldsection) + ' Disponible:' + 
-                         str('Disponible' in fieldsection))
-            if ('métrage' in fieldsection) or ('Disponible' in fieldsection):
+            titreh2 = elt1.find("h2").string.strip()
+            logger.debug('fieldsection:' + fieldsection + ' h2:'+ titreh2)
+            if ('métrage' in fieldsection) or ('Disponible' in fieldsection) or ('«' in titreh2):
                 # on ne garde que <span class=icon-play"> et non 'icon-tv-programm'
                 span_icon = elt1.find("span")['class']
                 logger.debug(' span_icon:' + ' '.join(span_icon))
                 if 'icon-play' in span_icon:
                     liens_cm.append(URL_BASE_CINEMA + elt1['about'])
+            # ICI test sur «Uncanny Valley» --> guillemets
+            # <div class="teaser-title field-title title">
+            # <h2>«Uncanny Valley» de Paul Wenninger</h2>  </div>
+            # else:
+                # titreh2 = elt1.find("h2").string.strip()
+                # logger.info('h2:' + titreh2)
+                # if '«' in titreh2:
+                    # span_icon = elt1.find("span")['class']
+                    # logger.debug(' span_icon:' + ' '.join(span_icon))
+                    # if 'icon-play' in span_icon:
+                        # liens_cm.append(URL_BASE_CINEMA + elt1['about'])
 
     logger.debug('---- create title_cm url_final ----')
     # pour chaque liens_cm DL du json
@@ -172,21 +182,21 @@ def main(dirdl='~', quality='HTTP_MP4_EQ_1/best', download=True, debug=False):
             if soup.find("div", class_="video-container"):
                 lien_video = soup.find(
                     "div", class_="video-container")['arte_vp_url']
-                logger.debug('  lien_video: ' + lien_video)
+                logger.debug('--lien_video: ' + lien_video)
 
                 req_final = requests.get(lien_video)
-                logger.debug('  request_status: ' + str(req_final.status_code))
+                logger.debug('--request_status: ' + str(req_final.status_code))
                 if req_final.status_code == 200:
                     # take: "VTR":
                     # "http:\/\/www.arte.tv\/guide\/fr\/057397-000\/elena",
                     json_final = json.loads(req_final.text)
                     try:
                         url_final = json_final['videoJsonPlayer']['VTR']
-                        logger.debug('  liens_dl_for_ytdl: ' + url_final)
+                        logger.debug('--liens_dl_for_ytdl: ' + url_final)
                         # add to the arte_cm dict
                         arte_cm[title_cm] = url_final
                     except Exception, e:
-                        logger.error('  %s pour %s et %s' %
+                        logger.error('--%s pour %s et %s' %
                                      (e, lien, lien_video))
             # cas d'un iframe
             # ATTENTION n'est pas tjs OK
