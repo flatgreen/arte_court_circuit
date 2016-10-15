@@ -1,3 +1,0 @@
-[console_scripts]
-arte_court_circuit = arte_court_circuit.arte_court_circuit:main.start
-
