@@ -29,7 +29,7 @@ from os.path import expanduser
 # m.a.j : 14 juin 2016
 #
 # notes:
-# quality = 'HTTP_MP4_EQ_1/best'  # mp4 720x406 VOA-STF, VOSTF 1500k OR best
+# quality = 'HTTP_EQ_1/best'  # mp4 720x406 VOA-STF, VOSTF 1500k OR best
 # voir qualities_for_ytdl.txt
 # with YAML windows path escape \
 
@@ -86,7 +86,7 @@ def directory_dl(adir):
 
 # MAIN #########################################################################
 @begin.start
-def main(dirdl='~', quality='HTTP_MP4_EQ_1/best', download=True, debug=False):
+def main(dirdl='~', quality='HTTP_EQ_1/best', download=True, debug=False):
 
     ''' arte_court_circuit est un script qui télécharge automatique les derniers
     court-métrages de l'émission 'court-circuit' sur Arte 'fr'. '''
@@ -139,77 +139,26 @@ def main(dirdl='~', quality='HTTP_MP4_EQ_1/best', download=True, debug=False):
     if not success:
         exit()
 
-    # Liste des pages des cm
-    liens_cm = []
+    arte_cm = {}
     # il peut y avoir plusieurs div secondary-list
     div = soup.find_all("div", class_="secondary-list")
     for elt in div:
         divpages = elt.select("article.node-article")
         for elt1 in divpages:
-            logger.debug(elt1['about'])
+            logger.debug('about:' + elt1['about'])
             fieldsection = elt1.find("div", class_="field-section").string.strip()
             titreh2 = elt1.find("h2").string.strip()
-            logger.debug('fieldsection:' + fieldsection + ' h2:'+ titreh2)
+            logger.debug(' fieldsection:' + fieldsection + ' h2:'+ titreh2)
             if ('métrage' in fieldsection) or ('Disponible' in fieldsection) or ('«' in titreh2):
                 # on ne garde que <span class=icon-play"> et non 'icon-tv-programm'
                 span_icon = elt1.find("span")['class']
-                logger.debug(' span_icon:' + ' '.join(span_icon))
+                logger.debug(' OK span_icon:' + ' '.join(span_icon))
                 if 'icon-play' in span_icon:
-                    liens_cm.append(URL_BASE_CINEMA + elt1['about'])
-            # ICI test sur «Uncanny Valley» --> guillemets
-            # <div class="teaser-title field-title title">
-            # <h2>«Uncanny Valley» de Paul Wenninger</h2>  </div>
-            # else:
-                # titreh2 = elt1.find("h2").string.strip()
-                # logger.info('h2:' + titreh2)
-                # if '«' in titreh2:
-                    # span_icon = elt1.find("span")['class']
-                    # logger.debug(' span_icon:' + ' '.join(span_icon))
-                    # if 'icon-play' in span_icon:
-                        # liens_cm.append(URL_BASE_CINEMA + elt1['about'])
-
-    logger.debug('---- create title_cm url_final ----')
-    # pour chaque liens_cm DL du json
-    # create a empty dict for {'title_cm','url_final'}
-    arte_cm = {}
-    for lien in liens_cm:
-        success, soup = dl_page_for_soup(lien)
-        if success:
-            title_cm = lien[33:]
-            logger.debug('title_cm: ' + title_cm)
-            # search: <div class="video-container",
-            # take: arte_vp_url="https://api.arte.tv/api...
-            if soup.find("div", class_="video-container"):
-                lien_video = soup.find(
-                    "div", class_="video-container")['arte_vp_url']
-                logger.debug('--lien_video: ' + lien_video)
-
-                req_final = requests.get(lien_video)
-                logger.debug('--request_status: ' + str(req_final.status_code))
-                if req_final.status_code == 200:
-                    # take: "VTR":
-                    # "http:\/\/www.arte.tv\/guide\/fr\/057397-000\/elena",
-                    json_final = json.loads(req_final.text)
-                    try:
-                        url_final = json_final['videoJsonPlayer']['VTR']
-                        logger.debug('--liens_dl_for_ytdl: ' + url_final)
-                        # add to the arte_cm dict
-                        arte_cm[title_cm] = url_final
-                    except Exception, e:
-                        logger.error('--%s pour %s et %s' %
-                                     (e, lien, lien_video))
-            # cas d'un iframe
-            # ATTENTION n'est pas tjs OK
-            # voir à suivre le lien info de iframe (vers papi guide)
-            elif soup.find("div", class_="has-iframe"):
-                parse_url = parse_qs(
-                    urlparse(soup.find("iframe")['src']).query)
-                url_final = parse_url['rendering_place'][0]
-                logger.debug('liens_dl_for_ytdl: ' + url_final)
-                # add to the arte_cm dict
-                arte_cm[title_cm] = url_final
-            else:
-                logger.debug('title_cm: not find')
+                    # ça doit suffir pout YTDL
+                    liens_cm = URL_BASE_CINEMA + elt1['about']
+                    logger.info(liens_cm)
+                    title_cm = liens_cm[33:]
+                    arte_cm[title_cm] = liens_cm
 
     if not download:
         logger.debug('NO download')

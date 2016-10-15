@@ -1,12 +1,11 @@
-format code    extension  resolution note
-
-HLS_XQ_1       m3u8       1280x720   VO-ST, 2200k 
-RTMP_HQ_1      flv        720x406    VO-ST, 800k 
-HTTP_MP4_HQ_1  mp4        720x406    VO-ST, 800k 
-RTMP_MQ_1      flv        384x216    VO-ST, 300k 
-HTTP_MP4_MQ_1  mp4        384x216    VO-ST, 300k 
-RTMP_EQ_1      flv        720x406    VO-ST, 1500k 
-HTTP_MP4_EQ_1  mp4        720x406    VO-ST, 1500k 
-HLS_SQ_1       m3u8       1280x720   VO-ST, 2200k 
-RTMP_SQ_1      flv        1280x720   VO-ST, 2200k 
-HTTP_MP4_SQ_1  mp4        1280x720   VO-ST, 2200k  (best)
+format code  extension  resolution note
+HLS_XQ_2     m3u8       1280x720   VO-STA, Allemand (Sous-titres) 2200k
+HTTP_HQ_2    mp4        640x360    VO-STA, Allemand (Sous-titres)  800k
+HTTP_MQ_2    mp4        384x216    VO-STA, Allemand (Sous-titres)  300k
+HTTP_EQ_2    mp4        720x406    VO-STA, Allemand (Sous-titres) 1500k
+HTTP_SQ_2    mp4        1280x720   VO-STA, Allemand (Sous-titres) 2200k
+HLS_XQ_1     m3u8       1280x720   VO-STF, Français (Sous-titres) 2200k
+HTTP_HQ_1    mp4        640x360    VO-STF, Français (Sous-titres)  800k
+HTTP_MQ_1    mp4        384x216    VO-STF, Français (Sous-titres)  300k
+HTTP_EQ_1    mp4        720x406    VO-STF, Français (Sous-titres) 1500k
+HTTP_SQ_1    mp4        1280x720   VO-STF, Français (Sous-titres) 2200k  (best)

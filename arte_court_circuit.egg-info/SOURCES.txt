@@ -2,6 +2,7 @@ MANIFEST.in
 README.md
 setup.py
 arte_court_circuit/__init__.py
+arte_court_circuit/arte_court_circuit - Copie.py
 arte_court_circuit/arte_court_circuit.py
 arte_court_circuit/log.py
 arte_court_circuit.egg-info/PKG-INFO

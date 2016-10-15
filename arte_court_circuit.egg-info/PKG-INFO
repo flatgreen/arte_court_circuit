@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: arte-court-circuit
-Version: 0.0.1
+Version: 0.1.0
 Summary: Télécharge les derniers court-métrages de Arte Court-circuit
 Home-page: https://github.com/flatgreen
 Author: flatgreen
@@ -12,7 +12,7 @@ Description: arte_court_circuit
         arte_court_circuit est un script python qui télécharge automatique les derniers 
         court-métrages mis en ligne par l'émission [cour-circuit](http://cinema.arte.tv/fr/magazine/court-circuit/emissions).
         
-        Actuellement télécharge qu'à partir de l'émission en français.
+        Actuellement, télécharge uniquement l'émission en français.
         
         Vous pouvez l'installer !
         ---------------------------

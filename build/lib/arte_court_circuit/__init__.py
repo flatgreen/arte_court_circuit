@@ -9,7 +9,7 @@
 
     vers le début fev maj de ytdl avec arte cinema (à suivre)
 
-    m.a.j : 12 fev 2016
+    m.a.j : 15 oct 2016
 """
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
