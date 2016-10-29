@@ -1,0 +1,5 @@
+beautifulsoup4
+begins
+dateparser >= 0.3.4
+requests
+youtube-dl >= 2016.2.13
